@@ -15,7 +15,6 @@ services:
       WORDPRESS_TABLE_PREFIX: ${WP_TABLE_PREFIX:-wp_}
     volumes:
       - wp_data:/var/www/html
-      - ./php/php.ini:/usr/local/etc/php/php.ini:ro
     depends_on:
       - db
     networks:
