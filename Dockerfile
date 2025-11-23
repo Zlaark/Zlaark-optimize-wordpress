@@ -1,5 +1,6 @@
 FROM php:8.2-fpm-alpine
 
+# Install required packages
 RUN apk update && apk add --no-cache \
     nginx \
     supervisor \
@@ -7,23 +8,25 @@ RUN apk update && apk add --no-cache \
     unzip \
     bash
 
+# PHP extensions
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
+# Download WordPress
 RUN curl -o /tmp/latest.zip https://wordpress.org/latest.zip \
     && unzip /tmp/latest.zip -d /var/www \
     && mv /var/www/wordpress/* /var/www/html/ \
     && rm -rf /var/www/wordpress /tmp/latest.zip
 
-# Nginx main config + site config
-COPY ./nginx.conf /etc/nginx/nginx.conf
+# Copy nginx config
 COPY ./default.conf /etc/nginx/http.d/default.conf
 
-# Correct PHP-FPM config copy
+# Copy PHP-FPM pool configuration (this file MUST exist)
 COPY ./www.conf /usr/local/etc/php-fpm.d/www.conf
 
-# Supervisor
+# Copy supervisor config
 COPY ./supervisord.conf /etc/supervisord.conf
 
+# Fix permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
