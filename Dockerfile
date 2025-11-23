@@ -22,6 +22,7 @@ COPY ./default.conf /etc/nginx/http.d/default.conf
 
 # Copy PHP-FPM pool configuration (this file MUST exist)
 COPY ./www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY ./php.ini /usr/local/etc/php/php.ini
 
 # Copy supervisor config
 COPY ./supervisord.conf /etc/supervisord.conf
