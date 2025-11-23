@@ -1,0 +1,44 @@
+# Dockerfile.wp
+FROM php:8.2-fpm-alpine
+
+# Install system deps
+RUN apk add --no-cache \
+    nginx \
+    bash \
+    git \
+    curl \
+    libzip-dev \
+    oniguruma-dev \
+    icu-dev \
+    mariadb-client \
+    zlib-dev \
+    openssh-client \
+    supervisor \
+    build-base \
+   
+
+# PHP extensions (common for WP + better perf)
+RUN docker-php-ext-install pdo_mysql mbstring intl exif pcntl opcache zip
+
+# Install Composer & WP-CLI
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+ && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+ && chmod +x wp-cli.phar \
+ && mv wp-cli.phar /usr/local/bin/wp
+
+# Configure permissions & working dir
+WORKDIR /var/www/html
+
+# Copy entrypoint (optional) and PHP config
+COPY php/php.ini /usr/local/etc/php/php.ini
+
+# Give www-data ownership (if present) and expose sockets
+RUN addgroup -g 1000 www && adduser -u 1000 -G www -s /bin/bash -D www
+RUN chown -R www:www /var/www || true
+
+# Enable Opcache recommended defaults if not configured by php.ini
+# No extra command — opcache configured from php.ini in repo
+
+EXPOSE 9000
+
+CMD ["php-fpm"]
