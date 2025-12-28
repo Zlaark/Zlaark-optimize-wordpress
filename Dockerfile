@@ -7,7 +7,22 @@ RUN apk update && apk add --no-cache \
     curl \
     unzip \
     bash \
+    freetype-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
+    imagemagick-dev \
+    imagemagick \
     $PHPIZE_DEPS
+
+# Install PHP extensions
+# Configure and install GD with WebP support
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) gd
+
+# Install Imagick
+RUN pecl install imagick \
+    && docker-php-ext-enable imagick
 
 # Install PHP extensions
 RUN docker-php-ext-install mysqli pdo pdo_mysql
