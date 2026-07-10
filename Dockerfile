@@ -25,7 +25,7 @@ RUN pecl install imagick \
     && docker-php-ext-enable imagick
 
 # Install PHP extensions
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN docker-php-ext-install mysqli pdo pdo_mysql soap
 
 # Install Redis (phpredis)
 RUN pecl install redis \
