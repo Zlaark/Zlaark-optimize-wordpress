@@ -13,6 +13,7 @@ RUN apk update && apk add --no-cache \
     libwebp-dev \
     imagemagick-dev \
     imagemagick \
+    libxml2-dev \
     $PHPIZE_DEPS
 
 # Install PHP extensions
